@@ -1,0 +1,135 @@
+#*--------------------------------------------------------------------------------------+
+#
+#     $Source: CPPProjects/MDLSource/DrawingTools.mke $
+#
+#  $Copyright: (c) fux
+#
+#--------------------------------------------------------------------------------------*/
+PolicyFile = MicroStationPolicy.mki
+DEFAULT_TARGET_PROCESSOR_ARCHITECTURE=x64
+
+MDLMKI = $(MSMDE)mki/
+
+%include $(MDLMKI)mdl.mki
+
+mdlLibs  = $(MSMDE)library/
+genSrc   = $(o)
+appName  = DrawingTools
+sAppName = DrawingTools
+
+#---------------------------------------------
+# Define macros specific to this example
+#---------------------------------------------
+privateInc      = $(baseDir)
+langSpec        = $(baseDir)/
+
+#----------------------------------------------------------
+# Create needed output directories in case they don't exist
+#----------------------------------------------------------
+always:
+    !~@mkdir $(o)
+    !~@mkdir $(rscObjects)
+    !~@mkdir $(reqdObjs)
+
+dirToSearch = $(MDLMKI)
+%include $(MDLMKI)cincapnd.mki
+
+dirToSearch = $(o)
+%include $(MDLMKI)cincapnd.mki
+
+#----------------------------------------------------------------------
+#   The following defines the dependency list for the CODE portion
+#   of this application. Included are any CODE libraries or objects
+#   from any related applications. Typically these files are linked
+#   together into a file with a '.mp' extension. (Mdl Program module)
+#
+#   NOTE: ALL literal strings which would be contained in a .mc file
+#         should be placed in a messageList resource located in the
+#         directory pointed to by 'langSpec'. All strings should be
+#         loaded from a messageList resource at runtime.
+#----------------------------------------------------------------------
+appObjects = \
+    $(o)$(appName)$(oext) \
+    $(o)ELementsDrawing$(oext) \
+    
+DLM_OBJECT_DEST         = $(o)
+DLM_NAME                = $(appName)
+DLM_OBJECT_FILES        = $(appObjects)
+DLM_NO_DLS              = 1     #  Used DLLEXPORT in .c file instead of using a .dls
+DLM_NO_DEF              = 1
+DLM_NOENTRY             = 1
+DLM_DEST                = $(mdlapps)
+LINKER_LIBRARIES        = $(mdlLibs)bentley.lib \
+                          $(mdlLibs)BentleyAllocator.lib \
+                          $(mdlLibs)mdlbltin.lib \
+                          $(mdlLibs)RmgrTools.lib \
+                          $(mdlLibs)BentleyGeom.lib \
+                          $(mdlLibs)DgnPlatform.lib \
+                          $(mdlLibs)dgnview.lib 
+DLM_NO_SIGN             = 1     # only for test apps; any delivered app MUST be signed.
+
+#----------------------------------------------------------------------
+#   The following defines the dependency list for any NON-Translatable
+#   resources used by this application. Typically this includes any
+#   command table definitions or resource type definitions. This list
+#   would also contain the completed CODE portion of the application.
+#   Typically these files are lib'd together into a file with a '.mi'
+#   extension. (Mdl Intermediate application)
+#----------------------------------------------------------------------
+appRscs = \
+    $(o)$(sAppName)Cmd.rsc
+
+#--------------------------------------------
+#       Create command table and header file
+#--------------------------------------------
+$(genSrc)$(sAppName)Cmd.h                : $(baseDir)$(sAppName)Cmd.r
+
+$(o)$(sAppName)Cmd.rsc                   : $(baseDir)$(sAppName)Cmd.r
+
+#----------------------------------------------------------------------
+#       The following section builds any necessary CODE modules for the
+#       application.
+#----------------------------------------------------------------------
+$(o)$(appName)$(oext)             : $(baseDir)$(appName).cpp           $(o)$(sAppName)Cmd.h $(baseDir)$(sAppName)Ids.h $(baseDir)$(appName).h
+
+$(o)ELementsDrawing$(oext)     : $(baseDir)ELementsDrawing.cpp     $(o)$(sAppName)Cmd.h $(baseDir)$(sAppName)Ids.h $(baseDir)$(appName).h
+
+%include $(MDLMKI)dlmlink.mki
+
+#---------------------------------------------
+#	Merge the dialog resources & MDL program file using rlib
+#---------------------------------------------
+$(o)$(appName).mi    : $(appRscs)
+	$(msg)
+	> $(o)make.opt
+	-o$@
+	$(appRscs)
+	<
+	$(RLibCmd) @$(o)make.opt
+	~time
+
+# complete construction of the .ma by getting the last resource.
+
+appRscs =   \
+    $(o)$(appName).mi \
+    $(rscObjects)basicmsg.rsc 
+
+langSpec = $(baseDir)/
+
+rCompOpts + -i$(langSpec)
+
+rCompOpts + -i$(genSrc)
+
+rCompOpts + -i$(_MakeFilePath)
+
+$(rscObjects)basicmsg.rsc       : $(langSpec)DrawingMsg.r $(baseDir)$(sAppName)Ids.h 
+
+$(mdlapps)$(appName).ma         : $(appRscs)
+        $(msg)
+        > $(rscObjects)make.opt
+        -o$@
+        $(appRscs)
+        <
+        $(RLibCmd) @$(rscObjects)make.opt
+        ~time
+
