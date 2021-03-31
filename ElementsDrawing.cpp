@@ -11,12 +11,12 @@ enum ElementPropsOptions
 };
 
 
-void DrawingCreateTool::InstallNewInstance(WCharCP unparsed)
+void DimensionsCreateTool::InstallNewInstance(WCharCP unparsed)
 {
 	mdlState_startPrimitive(line_dataPt1, InstallNewInstance, CMDNAME_Line, PROMPT_EnterPoint);
 }
 
-void DrawingCreateTool::line_dataPt1(DPoint3dCP ptP, int view)
+void DimensionsCreateTool::line_dataPt1(DPoint3dCP ptP, int view)
 {
 	ptStack[0] = *ptP;
 	StateCallback::SetDataPointFunction(line_dataPt2);
@@ -25,7 +25,7 @@ void DrawingCreateTool::line_dataPt1(DPoint3dCP ptP, int view)
 
 }
 
-void DrawingCreateTool::line_dataPt2(DPoint3dCP ptP, int view)
+void DimensionsCreateTool::line_dataPt2(DPoint3dCP ptP, int view)
 {
 	double length;
 	DPoint3d xAxisVec;
@@ -47,7 +47,7 @@ void DrawingCreateTool::line_dataPt2(DPoint3dCP ptP, int view)
 
 }
 
-void DrawingCreateTool::line_drawLine(DPoint3dCP ptP, int view, DgnPlatform::DgnDrawMode drawMode)
+void DimensionsCreateTool::line_drawLine(DPoint3dCP ptP, int view, DgnPlatform::DgnDrawMode drawMode)
 {
 	DgnPlatform::MSElement elem;
 	DPoint3d points[2];

@@ -21,7 +21,7 @@
     <ClCompile Include="ElementsDrawing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DimensionsTools.cpp">
+    <ClCompile Include="BoundingboxDrawing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClInclude Include="ElementsDrawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DimensionsTools.h">
+    <ClInclude Include="BoundingboxDrawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

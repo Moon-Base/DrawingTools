@@ -50,6 +50,7 @@ dirToSearch = $(o)
 #----------------------------------------------------------------------
 appObjects = \
     $(o)$(appName)$(oext) \
+	$(o)BoundingboxDrawing$(oext) \
     $(o)ELementsDrawing$(oext) \
     
 DLM_OBJECT_DEST         = $(o)
@@ -92,7 +93,10 @@ $(o)$(sAppName)Cmd.rsc                   : $(baseDir)$(sAppName)Cmd.r
 #----------------------------------------------------------------------
 $(o)$(appName)$(oext)          : $(baseDir)$(appName).cpp $(o)$(sAppName)Cmd.h        $(baseDir)$(sAppName)Ids.h  $(baseDir)$(appName).h
 
+$(o)BoundingboxDrawing$(oext)     : $(baseDir)BoundingboxDrawing.cpp $(o)$(sAppName)Cmd.h   $(baseDir)$(sAppName)Ids.h  $(baseDir)BoundingboxDrawing.h $(baseDir)$(appName).h
+
 $(o)ELementsDrawing$(oext)     : $(baseDir)ELementsDrawing.cpp $(o)$(sAppName)Cmd.h   $(baseDir)$(sAppName)Ids.h  $(baseDir)ElementsDrawing.h $(baseDir)$(appName).h
+
 
 %include $(MDLMKI)dlmlink.mki
 

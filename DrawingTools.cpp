@@ -1,26 +1,22 @@
 #include "DrawingTools.h"
 
 
-void DrawingToolUtility::drawingLine(WCharCP unparsed)
+
+void ToolUtility::drawingLine(WCharCP unparsed)
 {
-	DrawingCreateTool::InstallNewInstance(unparsed);
+	DimensionsCreateTool::InstallNewInstance(unparsed);
 }
 
-void DrawingToolUtility::drawingMline(WCharCP unparsed)
+void ToolUtility::boundingbox(WCharCP unparsed)
 {
-	//DrawingCreateTool::InstallNewInstance(unparsed);
+	BoundingboxTool::InstallNewInstance(CMDNAME_Boundingbox, DIMSTYLE_VALUE_General_Alignment_View);
 }
 
-void createDimensionsLinear(WCharCP)
-{
-
-}
 
 static MdlCommandNumber s_commandNumbers[] =
 {
-	{DrawingToolUtility::drawingLine,  CMD_DRAWING_LINE},
-	{DrawingToolUtility::drawingMline, CMD_DRAWING_MLINE},
-	{DrawingToolUtility::drawingMline, CMD_DRAWING_MLINE},
+	{ToolUtility::drawingLine,  CMD_DRAWING_LINE},
+	{ToolUtility::boundingbox, CMD_DRAWING_BOUNDINGBOX},
 };
 
 

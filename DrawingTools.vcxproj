@@ -83,12 +83,12 @@
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DimensionsTools.cpp" />
+    <ClCompile Include="BoundingboxDrawing.cpp" />
     <ClCompile Include="DrawingTools.cpp" />
     <ClCompile Include="ElementsDrawing.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DimensionsTools.h" />
+    <ClInclude Include="BoundingboxDrawing.h" />
     <ClInclude Include="DrawingTools.h" />
     <ClInclude Include="DrawingToolsCmd.h" />
     <ClInclude Include="DrawingToolsIds.h" />

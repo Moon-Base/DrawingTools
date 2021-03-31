@@ -4,8 +4,7 @@
 #define STRINGLISTID_Prompts                1
 
 #define CMDNAME_Line						1
-#define CMDNAME_Mline					    2
-#define CMDNAME_DimensionsLinear			3
+#define CMDNAME_Boundingbox		            2
 
 
 #define PROMPT_EnterPoint					1
