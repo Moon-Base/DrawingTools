@@ -16,6 +16,15 @@
 
 #include "DrawingToolsIds.h"
 #include "DrawingToolsCmd.h"
+#include "ElementsDrawing.h"
 
-void drawingLine(WCharCP);
-void drawingMline(WCharCP);
+struct DrawingToolUtility
+{
+	static void drawingLine(WCharCP);
+	static void drawingMline(WCharCP);
+};
+
+struct DimensionsToolUtility
+{
+	static void createDimensionsLinear(WCharCP);
+};

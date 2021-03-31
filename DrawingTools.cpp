@@ -1,10 +1,26 @@
 #include "DrawingTools.h"
 
 
+void DrawingToolUtility::drawingLine(WCharCP unparsed)
+{
+	DrawingCreateTool::InstallNewInstance(unparsed);
+}
+
+void DrawingToolUtility::drawingMline(WCharCP unparsed)
+{
+	//DrawingCreateTool::InstallNewInstance(unparsed);
+}
+
+void createDimensionsLinear(WCharCP)
+{
+
+}
+
 static MdlCommandNumber s_commandNumbers[] =
 {
-	{drawingLine,  CMD_DRAWING_LINE},
-	{drawingMline, CMD_DRAWING_MLINE},
+	{DrawingToolUtility::drawingLine,  CMD_DRAWING_LINE},
+	{DrawingToolUtility::drawingMline, CMD_DRAWING_MLINE},
+	{DrawingToolUtility::drawingMline, CMD_DRAWING_MLINE},
 };
 
 

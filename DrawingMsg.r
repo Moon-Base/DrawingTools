@@ -13,7 +13,7 @@ MessageList STRINGLISTID_Commands =
 MessageList STRINGLISTID_Prompts =
 {
     {
-    {PROMPT_DrawingLine,      "Drawing Line"           },
-    {PROMPT_DrawingMline,    "Drawing Mline"      },
+    {PROMPT_EnterPoint,      "Drawing Line"           },
+    {PROMPT_AcceptReject,    "Drawing Mline"      },
     }
 };
