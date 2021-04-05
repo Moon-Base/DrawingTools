@@ -9,7 +9,7 @@ void ToolUtility::drawingLine(WCharCP unparsed)
 
 void ToolUtility::boundingbox(WCharCP unparsed)
 {
-	BoundingboxTool::InstallNewInstance(CMDNAME_Boundingbox, DIMSTYLE_VALUE_General_Alignment_View);
+	BoundingboxTool::InstallNewInstance(CMDNAME_Boundingbox);
 }
 
 
@@ -29,3 +29,4 @@ extern "C" void MdlMain(int argc, WCharCP argv[])
 	mdlSystem_registerCommandNumbers(s_commandNumbers);
 	mdlParse_loadCommandTable(NULL);
 }
+

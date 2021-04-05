@@ -1,34 +1,75 @@
 #pragma once
 
 #include    <Mstn/MdlApi/MdlApi.h>
-//#include    <Mstn/ISessionMgr.h>
-//#include    <Mstn/ElementPropertyUtils.h>
 #include    <DgnView/DgnElementSetTool.h>
-//#include    <DgnPlatform/DimensionHandler.h>
-//#include    <DgnPlatform/ISettings.h>
+#include    <Bentley/stdcxx/bvector.h>
+#include	<PSolid/PSolidCoreAPI.h>
+#include	<DgnView/LocateSubEntityTool.h>
+#include	<Mstn/isessionmgr.h>
+#include <DgnPlatform\DgnPlatformAPI.h>
 
-//#include    "DrawingToolsIds.h"
 
 USING_NAMESPACE_BENTLEY_DGNPLATFORM
 USING_NAMESPACE_BENTLEY_MSTNPLATFORM
 USING_NAMESPACE_BENTLEY_MSTNPLATFORM_ELEMENT
 
 
-struct BoundingboxTool : DgnElementSetTool
+
+struct EleAgendaEvents : IElementAgendaEvents
 {
 private:
+	virtual bool _OnRedrawGroupEvent(ElementAgendaCP, AgendaOperation, AgendaModify, RedrawGroupInfo const*) override;
+};
+
+struct BoundingboxTool : public DgnElementSetTool
+{
+public:
+	
+	static void  InstallNewInstance(int toolId);
+
+private:
+	enum class  BoundingboxCreateToolState
+	{
+		TOOLSTATE_Locating = 0,
+		TOOLSTATE_Dynamics = 1
+	};
+
+	BoundingboxCreateToolState      m_toolState;
 	int                             m_iView;
 	HitPathCP                       m_hitPath;
-	bvector<DPoint3d>               m_dimPoints;
-	int                             m_alignment;
-	
-	BoundingboxTool(int toolName, int alignment) : DgnElementSetTool(toolName), m_alignment(alignment) { }
+	bvector<DPoint3d>				m_points;
 
-	virtual     bool                _OnDataButton(DgnButtonEventCR ev) override;
-	virtual     void                _OnRestartTool() override;
-	virtual     UsesDragSelect      _AllowDragSelect() override { return USES_DRAGSELECT_Box; };
-	StatusInt                       _OnElementModify(EditElementHandleR eeh) override { return SUCCESS; }
-public:
-	static      void                InstallNewInstance(int toolId, int alignment);
+	EditElementHandleP              m_editElementHandleP;
+	int								m_ElementCount = 0;
+	MSElementDescrCP				tranEdP = NULL;
+	RotMatrixCP						rotMatrixP = NULL;
+
+	BoundingboxTool(int toolName) : DgnElementSetTool(toolName) { }
+	
+	virtual		void					_OnPostInstall() override;
+	//virtual		bool					_OnDataButton(DgnButtonEventCR ev) override;
+	virtual		void					_OnRestartTool()override;
+	//virtual     bool					_OnPostLocate(HitPathCP path, WStringR cantAcceptReason) override;
+	virtual		UsesDragSelect			_AllowDragSelect()override { return USES_DRAGSELECT_Box; }
+	virtual		void					_SetupAndPromptForNextAction();
+	//virtual		void					_OnDynamicFrame(DgnButtonEventCR ev) override;
+	//virtual     bool					_OnResetButton(DgnButtonEventCR ev) override;
+	//virtual		StatusInt				_OnElementModify(EditElementHandleR eeh) override;
+
+
+	bool		CreateBoundingbox(EditElementHandleR eeh, bvector<DPoint3d> const& points);
+	bool		CreateElement(EditElementHandleR eeh, bvector<DPoint3d> points);
+	bool		ValidateSelection(HitPathCP hitPath);
+
+	virtual		void					_LocateOneElement(DgnButtonEventCR ev, bool newSearch) override;
+	virtual		HitPathCP				_DoLocate(DgnButtonEventCR ev, bool newSearch, ComponentMode complexComponent) override;
+	//virtual		EditElementHandleP		_BuildLocateAgenda(HitPathCP path, DgnButtonEventCP ev) override;
+	virtual		void					_ModifyAgendaEntries() override;
+	virtual		bool					_FilterAgendaEntries() override;
+	virtual		void					_HiliteAgendaEntries(bool changed) override;
+	//virtual		bool					_SetupForModify(DgnButtonEventCR ev, bool isDynamics) override;
+	virtual		StatusInt				_ProcessAgenda(DgnButtonEventCR ev) override;
+	virtual		bool					_OnModifyComplete(DgnButtonEventCR ev) override;
+	virtual		void					_OnReinitialize() override;
 	
 };

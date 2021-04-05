@@ -32,5 +32,4 @@
 *.app
 
 x64/
-/DrawingTools
 /.vs

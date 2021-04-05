@@ -79,6 +79,8 @@
     <NMakeIncludeSearchPath>D:\MicroStationCONNECTSDK\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakeForcedIncludes>
     </NMakeForcedIncludes>
+    <LibraryPath>
+    </LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>

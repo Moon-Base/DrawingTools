@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Mstn/MdlApi/MdlApi.h>
+//#include <Mstn/MdlApi/MdlApi.h>
 //#include <Mstn/ElementPropertyUtils.h>
 //#include <DgnView/AccuDraw.h>
 //#include <DgnView/DgnElementSetTool.h>
@@ -28,3 +28,5 @@ struct ToolUtility
 	static void drawingLine(WCharCP);
 	static void boundingbox(WCharCP);
 };
+
+
