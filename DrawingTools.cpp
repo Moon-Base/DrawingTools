@@ -9,7 +9,7 @@ void ToolUtility::drawingLine(WCharCP unparsed)
 
 void ToolUtility::boundingbox(WCharCP unparsed)
 {
-	BoundingboxTool::InstallNewInstance(CMDNAME_Boundingbox);
+	BoundingboxDrawing::InstallNewInstance();
 }
 
 

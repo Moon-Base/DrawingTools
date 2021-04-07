@@ -15,7 +15,6 @@ struct DimensionsCreateTool : DgnElementSetTool
 {
 private:
 	int                             m_iView;
-	virtual bool					_OnDataButton(DgnButtonEventCR ev) override;
 
 
 	static void line_dataPt1(DPoint3dCP ptP, int view);

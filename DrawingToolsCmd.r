@@ -14,7 +14,7 @@
 +----------------------------------------------------------------------*/
 CommandTable CT_MAIN =
     { 
-    { 1, CT_MODIFY,     MANIPULATION,   REQ,            "DRAWING" },
+    { 1, CT_MODIFY,     MANIPULATION,   REQ,            "DRAWING" },manipulation
     };
 
 CommandTable CT_MODIFY =

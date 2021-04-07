@@ -6,7 +6,7 @@ MessageList STRINGLISTID_Commands =
 {
     {
     {CMDNAME_Line,           "Line"                      },
-    {CMDNAME_Boundingbox,          "Boundingbox"               },
+    {CMDNAME_Boundingbox,    "Boundingbox"               },
     }
 };
 
