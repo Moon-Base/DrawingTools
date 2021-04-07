@@ -4,8 +4,8 @@
 #include    <DgnView/DgnElementSetTool.h>
 #include    <Bentley/stdcxx/bvector.h>
 #include	<Mstn/isessionmgr.h>
-#include	<DgnPlatform\LinearHandlers.h>
-#include	<DgnPlatform\DisplayHandler.h>
+#include	<DgnPlatform/LinearHandlers.h>
+#include	<DgnPlatform/DisplayHandler.h>
 
 #include	<xlocinfo.h>
 

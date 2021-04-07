@@ -76,11 +76,13 @@
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NMakeIncludeSearchPath>D:\MicroStationCONNECTSDK\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>
+    </NMakeIncludeSearchPath>
     <NMakeForcedIncludes>
     </NMakeForcedIncludes>
     <LibraryPath>
     </LibraryPath>
+    <IncludePath>C:\Program Files\Bentley\OpenBuildings CONNECT Edition\OpenBuildingsDesignerSDK\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
