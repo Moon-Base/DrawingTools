@@ -3,13 +3,10 @@
 
 BoundingboxDrawing::BoundingboxDrawing()
 {
-	m_minPoint.x = m_minPoint.y = m_minPoint.z = INT_MAX;
-	m_maxPoint.x = m_maxPoint.y = m_maxPoint.z = INT_MIN;
 }
 
 BoundingboxDrawing::~BoundingboxDrawing()
 {
-
 }
 
 void BoundingboxDrawing::InstallNewInstance()
@@ -26,13 +23,7 @@ void BoundingboxDrawing::_OnRestartTool()
 
 bool BoundingboxDrawing::_OnDataButton(DgnButtonEventCR ev)
 {
-	__super::_OnDataButton(ev);
-
-	/*auto& agenda = GetElementAgenda();
-	int size = (int)agenda.size();
-	if (size < 0)
-		return false;*/
-
+	__super::_OnDataButton(ev);	
 	return true;
 }
 
@@ -57,7 +48,10 @@ bool BoundingboxDrawing::_OnModifyComplete(DgnButtonEventCR ev)
 {
 	__super::_OnModifyComplete(ev);
 
-	CreateBoundingLine();
+	//CreateBoundingLine();
+	//CreateBounding3D();
+	
+	CreateBounding();
 	return true;
 }
 
@@ -67,37 +61,22 @@ void BoundingboxDrawing::CalcLineBounding()
 	int size = (int)agenda.size();
 	if (size == 0)
 		return;
-	bool bPointXYZStatus = true;
+	
 	for (auto& eh : agenda)
 	{
-		//todo 用这种方法
-		DRange3d range;
-		BentleyStatus status = eh.GetDisplayHandler()->CalcElementRange(eh, range, nullptr);
+		DRange3d rangeCur;
+
+		BentleyStatus status = eh.GetDisplayHandler()->CalcElementRange(eh, rangeCur, nullptr);
 		status = SUCCESS;
-		if (bPointXYZStatus)
-		{
-			m_minPoint.x = range.low.x;
-			m_minPoint.y = range.low.y;
-			m_minPoint.z = range.low.z;
 
-			m_maxPoint.x = range.high.x;
-			m_maxPoint.y = range.high.y;
-			m_maxPoint.z = range.high.z;
-			bPointXYZStatus = false;
-		}
-				
-		m_minPoint.x > range.low.x ? m_minPoint.x = range.low.x : m_minPoint.x = m_minPoint.x;
-		m_minPoint.y > range.low.y ? m_minPoint.y = range.low.y : m_minPoint.y = m_minPoint.y;
-		m_minPoint.z > range.low.z ? m_minPoint.z = range.low.z : m_minPoint.z = m_minPoint.z;
+		m_rangeSum.UnionOf(m_rangeSum, rangeCur);
 
-		m_maxPoint.x < range.high.x ? m_maxPoint.x = range.high.x : m_maxPoint.x = m_maxPoint.x;
-		m_maxPoint.y < range.high.y ? m_maxPoint.y = range.high.y : m_maxPoint.y = m_maxPoint.y;
-		m_maxPoint.z < range.high.z ? m_maxPoint.z = range.high.z : m_maxPoint.z = m_maxPoint.z;
-
-		int type = eh.GetElementType();
+		
+		//针对多段线的包围盒计算绘制
+		/*int type = eh.GetElementType();
 		if (type == 3)
 		{
-			/*line_3d line3d = eh.GetElementCP()->line_3d;
+			line_3d line3d = eh.GetElementCP()->line_3d;
 			DPoint3d sp = line3d.start;
 			DPoint3d ep = line3d.end;
 
@@ -112,8 +91,8 @@ void BoundingboxDrawing::CalcLineBounding()
 				m_maxPoint.x < pt.x ? m_maxPoint.x = pt.x : m_maxPoint.x = m_maxPoint.x;
 				m_maxPoint.y < pt.y ? m_maxPoint.y = pt.y : m_maxPoint.y = m_maxPoint.y;
 				m_maxPoint.z < pt.z ? m_maxPoint.z = pt.z : m_maxPoint.z = m_maxPoint.z;
-			}*/
-		}
+			}
+		}*/
 	}
 }
 
@@ -122,14 +101,15 @@ void BoundingboxDrawing::CreateBoundingLine()
 {
 	EditElementHandle eeh;
 	bvector<DPoint3d> points(5);
-
-	points[0] = Dpoint3d::From(m_minPoint.x, m_minPoint.y, 0);
-	points[1] = Dpoint3d::From(m_maxPoint.x, m_minPoint.y, 0);
-	points[2] = Dpoint3d::From(m_maxPoint.x, m_maxPoint.y, 0);
-	points[3] = Dpoint3d::From(m_minPoint.x, m_maxPoint.y, 0);
-	points[4] = Dpoint3d::From(m_minPoint.x, m_minPoint.y, 0);
-	if (points.size() < 2)
+	if (m_rangeSum.IsNull())
 		return;
+	points[0] = Dpoint3d::From(m_rangeSum.low.x,  m_rangeSum.low.y,  0);
+	points[1] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.low.y,  0);
+	points[2] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.high.y, 0);
+	points[3] = Dpoint3d::From(m_rangeSum.low.x,  m_rangeSum.high.y, 0);
+	points[4] = Dpoint3d::From(m_rangeSum.low.x,  m_rangeSum.low.y,  0);
+	/*if (points.size() < 2)
+		return;*/
 
 	DgnModelP model = ISessionMgr::GetActiveDgnModelP();
 
@@ -139,3 +119,107 @@ void BoundingboxDrawing::CreateBoundingLine()
 	eeh.AddToModel();
 }
 
+void BoundingboxDrawing::CreateBounding3D()
+{
+	EditElementHandle eeh;
+	bvector<DPoint3d> points(16);
+	if (m_rangeSum.IsNull())
+		return;
+	points[0] = Dpoint3d::From(m_rangeSum.low.x,  m_rangeSum.low.y,  m_rangeSum.low.z);
+	points[1] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.low.y,  m_rangeSum.low.z);
+	points[2] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.high.y, m_rangeSum.low.z);
+	points[3] = Dpoint3d::From(m_rangeSum.low.x,  m_rangeSum.high.y, m_rangeSum.low.z);
+	points[4] = Dpoint3d::From(m_rangeSum.low.x,  m_rangeSum.low.y,  m_rangeSum.low.z);
+
+	points[5] = Dpoint3d::From(m_rangeSum.low.x, m_rangeSum.low.y, m_rangeSum.high.z);
+	points[6] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.low.y, m_rangeSum.high.z);
+	points[7] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.high.y, m_rangeSum.high.z);
+	points[8] = Dpoint3d::From(m_rangeSum.low.x, m_rangeSum.high.y, m_rangeSum.high.z);
+	points[9] = Dpoint3d::From(m_rangeSum.low.x, m_rangeSum.low.y, m_rangeSum.high.z);
+
+	points[10] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.low.y, m_rangeSum.high.z);
+	points[11] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.low.y, m_rangeSum.low.z);
+	points[12] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.high.y, m_rangeSum.low.z);
+	points[13] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.high.y, m_rangeSum.high.z);
+	points[14] = Dpoint3d::From(m_rangeSum.low.x, m_rangeSum.high.y, m_rangeSum.high.z);
+	points[15] = Dpoint3d::From(m_rangeSum.low.x, m_rangeSum.high.y, m_rangeSum.low.z);
+
+
+	DgnModelP model = ISessionMgr::GetActiveDgnModelP();
+
+	MultilineStylePtr activeStyle = MultilineStyle::GetSettings(*(ISessionMgr::GetActiveDgnFile()));
+	if (SUCCESS != LineStringHandler::CreateLineStringElement(eeh, nullptr, points.data(), points.size(), model->Is3d(), *model))
+		return;
+	eeh.AddToModel();
+}
+
+void BoundingboxDrawing::CreateBoundingPoly(bvector<DPoint3d> points)
+{
+	EditElementHandle eeh;
+	PolyfaceHeaderPtr polyface = PolyfaceHeader::CreateVariableSizeIndexed();
+	polyface->AddPolygon(points);
+
+	if (SUCCESS != MeshHeaderHandler::CreateMeshElement(eeh, NULL, *polyface, true, *ACTIVEMODEL))
+		return;
+	ElementPropertyUtils::ApplyActiveSettings(eeh);
+	eeh.AddToModel();
+}
+
+void BoundingboxDrawing::CreateBounding()
+{
+	bvector<DPoint3d> pointsSum(8);
+	pointsSum[0] = Dpoint3d::From(m_rangeSum.low.x, m_rangeSum.low.y, m_rangeSum.low.z);
+	pointsSum[1] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.low.y, m_rangeSum.low.z);
+	pointsSum[2] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.high.y, m_rangeSum.low.z);
+	pointsSum[3] = Dpoint3d::From(m_rangeSum.low.x, m_rangeSum.high.y, m_rangeSum.low.z);
+
+	pointsSum[4] = Dpoint3d::From(m_rangeSum.low.x, m_rangeSum.low.y, m_rangeSum.high.z);
+	pointsSum[5] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.low.y, m_rangeSum.high.z);
+	pointsSum[6] = Dpoint3d::From(m_rangeSum.high.x, m_rangeSum.high.y, m_rangeSum.high.z);
+	pointsSum[7] = Dpoint3d::From(m_rangeSum.low.x, m_rangeSum.high.y, m_rangeSum.high.z);
+	if (m_rangeSum.IsNull())
+		return;
+	
+
+	bvector<DPoint3d> pointsBottom(4);
+	pointsBottom[0] = pointsSum[0];
+	pointsBottom[1] = pointsSum[1];
+	pointsBottom[2] = pointsSum[2];
+	pointsBottom[3] = pointsSum[3];
+	CreateBoundingPoly(pointsBottom);
+
+	bvector<DPoint3d> pointsTop(4);
+	pointsTop[0] = pointsSum[4];
+	pointsTop[1] = pointsSum[5];
+	pointsTop[2] = pointsSum[6];
+	pointsTop[3] = pointsSum[7];
+	CreateBoundingPoly(pointsTop);
+
+	bvector<DPoint3d> pointsFront(4);
+	pointsFront[0] = pointsSum[0];
+	pointsFront[1] = pointsSum[1];
+	pointsFront[2] = pointsSum[5];
+	pointsFront[3] = pointsSum[4];
+	CreateBoundingPoly(pointsFront);
+
+	bvector<DPoint3d> pointsRear(4);
+	pointsRear[0] = pointsSum[2];
+	pointsRear[1] = pointsSum[3];
+	pointsRear[2] = pointsSum[7];
+	pointsRear[3] = pointsSum[6];
+	CreateBoundingPoly(pointsRear);
+
+	bvector<DPoint3d> pointsLeft(4);
+	pointsLeft[0] = pointsSum[3];
+	pointsLeft[1] = pointsSum[0];
+	pointsLeft[2] = pointsSum[4];
+	pointsLeft[3] = pointsSum[7];
+	CreateBoundingPoly(pointsLeft);
+
+	bvector<DPoint3d> pointsRight(4);
+	pointsRight[0] = pointsSum[1];
+	pointsRight[1] = pointsSum[2];
+	pointsRight[2] = pointsSum[6];
+	pointsRight[3] = pointsSum[5];
+	CreateBoundingPoly(pointsRight);
+}
