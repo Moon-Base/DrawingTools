@@ -2,21 +2,26 @@
 
 
 
-void ToolUtility::drawingLine(WCharCP unparsed)
+void ToolUtility::DrawingLine(WCharCP unparsed)
 {
 	DimensionsCreateTool::InstallNewInstance(unparsed);
 }
 
-void ToolUtility::boundingbox(WCharCP unparsed)
+void ToolUtility::Boundingbox(WCharCP unparsed)
 {
 	BoundingboxDrawing::InstallNewInstance();
 }
 
+void ToolUtility::RectangleDynamicDrawing(WCharCP unparsed)
+{
+	RectangleDrawing::InstallNewInstance(CMDNAME_RectangleDynamic, PROMPT_DrawRectangle);
+}
 
 static MdlCommandNumber s_commandNumbers[] =
 {
-	{ToolUtility::drawingLine,  CMD_DRAWING_LINE},
-	{ToolUtility::boundingbox, CMD_DRAWING_BOUNDINGBOX},
+	{ToolUtility::DrawingLine,				CMD_DRAWING_LINE},
+	{ToolUtility::Boundingbox,				CMD_DRAWING_BOUNDINGBOX},
+	{ToolUtility::RectangleDynamicDrawing,  CMD_DRAWING_RECTANGLEDYNAMIC},
 };
 
 

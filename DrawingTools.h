@@ -18,6 +18,7 @@
 #include "DrawingToolsCmd.h"
 #include "ElementsDrawing.h"
 #include "BoundingboxDrawing.h"
+#include "RectangleDrawing.h"
 
 //USING_NAMESPACE_BENTLEY_DGNPLATFORM
 //USING_NAMESPACE_BENTLEY_MSTNPLATFORM
@@ -25,8 +26,9 @@
 
 struct ToolUtility
 {
-	static void drawingLine(WCharCP);
-	static void boundingbox(WCharCP);
+	static void DrawingLine(WCharCP);
+	static void Boundingbox(WCharCP);
+	static void RectangleDynamicDrawing(WCharCP);
 };
 
 

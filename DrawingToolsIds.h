@@ -5,11 +5,12 @@
 
 #define CMDNAME_Line						1
 #define CMDNAME_Boundingbox		            2
+#define CMDNAME_RectangleDynamic		    3
 
 
 #define PROMPT_EnterPoint					1
 #define PROMPT_AcceptReject					2
-#define PROMPT_ClickInView					3
+#define PROMPT_DrawRectangle				3
 #define PROMPT_IdentifyElement				4
 #define PROMPT_SelectStartOfDimension		5
 #define PROMPT_SelectEndOfDimension			6

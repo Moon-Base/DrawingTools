@@ -66,8 +66,8 @@ void BoundingboxDrawing::CalcLineBounding()
 	{
 		DRange3d rangeCur;
 
-		BentleyStatus status = eh.GetDisplayHandler()->CalcElementRange(eh, rangeCur, nullptr);
-		status = SUCCESS;
+		eh.GetDisplayHandler()->CalcElementRange(eh, rangeCur, nullptr);
+		//status = SUCCESS;
 
 		m_rangeSum.UnionOf(m_rangeSum, rangeCur);
 

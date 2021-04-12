@@ -89,6 +89,7 @@
   <ItemGroup>
     <ClCompile Include="BoundingboxDrawing.cpp" />
     <ClCompile Include="DrawingTools.cpp" />
+    <ClCompile Include="RectangleDrawing.cpp" />
     <ClCompile Include="ElementsDrawing.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +97,7 @@
     <ClInclude Include="DrawingTools.h" />
     <ClInclude Include="DrawingToolsCmd.h" />
     <ClInclude Include="DrawingToolsIds.h" />
+    <ClInclude Include="RectangleDrawing.h" />
     <ClInclude Include="ElementsDrawing.h" />
   </ItemGroup>
   <ItemGroup>

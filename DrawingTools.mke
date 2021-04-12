@@ -52,6 +52,7 @@ appObjects = \
     $(o)$(appName)$(oext) \
 	$(o)BoundingboxDrawing$(oext) \
     $(o)ELementsDrawing$(oext) \
+	$(o)RectangleDrawing$(oext) \
     
 DLM_OBJECT_DEST         = $(o)
 DLM_NAME                = $(appName)
@@ -91,11 +92,13 @@ $(o)$(sAppName)Cmd.rsc                   : $(baseDir)$(sAppName)Cmd.r
 #       The following section builds any necessary CODE modules for the
 #       application.
 #----------------------------------------------------------------------
-$(o)$(appName)$(oext)          : $(baseDir)$(appName).cpp $(o)$(sAppName)Cmd.h        $(baseDir)$(sAppName)Ids.h  $(baseDir)$(appName).h
+$(o)$(appName)$(oext)  : $(baseDir)$(appName).cpp $(o)$(sAppName)Cmd.h  $(baseDir)$(sAppName)Ids.h  $(baseDir)$(appName).h
 
-$(o)BoundingboxDrawing$(oext)     : $(baseDir)BoundingboxDrawing.cpp $(o)$(sAppName)Cmd.h   $(baseDir)$(sAppName)Ids.h  $(baseDir)BoundingboxDrawing.h $(baseDir)$(appName).h
+$(o)BoundingboxDrawing$(oext)  : $(baseDir)BoundingboxDrawing.cpp $(o)$(sAppName)Cmd.h  $(baseDir)$(sAppName)Ids.h  $(baseDir)BoundingboxDrawing.h $(baseDir)$(appName).h
 
-$(o)ELementsDrawing$(oext)     : $(baseDir)ELementsDrawing.cpp $(o)$(sAppName)Cmd.h   $(baseDir)$(sAppName)Ids.h  $(baseDir)ElementsDrawing.h $(baseDir)$(appName).h
+$(o)ELementsDrawing$(oext)  : $(baseDir)ELementsDrawing.cpp $(o)$(sAppName)Cmd.h  $(baseDir)$(sAppName)Ids.h  $(baseDir)ElementsDrawing.h $(baseDir)$(appName).h
+
+$(o)RectangleDrawing$(oext)  : $(baseDir)RectangleDrawing.cpp $(o)$(sAppName)Cmd.h  $(baseDir)$(sAppName)Ids.h  $(baseDir)RectangleDrawing.h $(baseDir)$(appName).h
 
 
 %include $(MDLMKI)dlmlink.mki
