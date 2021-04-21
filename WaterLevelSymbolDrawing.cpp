@@ -32,6 +32,7 @@ bool CWaterLevelSymbolDrawing::_OnDataButton(DgnButtonEventCR ev)
 	if (m_DataButtonPickNum.size() == 1)
 	{
 		m_waterLevelDatum = m_DataButtonPickNum[0].y;
+		_BeginDynamics();
 		return true;
 	}
 	
@@ -121,35 +122,38 @@ void CWaterLevelSymbolDrawing::_OnDynamicFrame(DgnButtonEventCR ev)
 	EditElementHandle eeh;
 	if (!CreateTriangle(eeh, m_dynamicTrgPoints))
 		return;*/
+	//__super::_OnDynamicFrame(ev);
+	if (m_waterLevelDatum == 0)
+		return;
 	DPoint3d pickPt = *ev.GetPoint();
 	DPoint3d levelDatumPt = DPoint3d::From(pickPt.x, m_waterLevelDatum, 0.0);
 
 	CalcAllPt(levelDatumPt, m_vtDistance);
+	
 	for (vector<DPoint3d> vtPt : m_sumSymbolPt)
 	{
 		EditElementHandle eeh;
 		if (!CreateElement(eeh, vtPt))
 			continue;
-			//eeh.AddToModel();
 		RedrawElems redrawElems;
 		redrawElems.SetDynamicsViews(IViewManager::GetActiveViewSet(), ev.GetViewport()); // Display in all views, draws to cursor view first...
 		redrawElems.SetDrawMode(DRAW_MODE_TempDraw);
 		redrawElems.SetDrawPurpose(DrawPurpose::Dynamics);
 		redrawElems.DoRedraw(eeh);
 	}
+	
 
-	//for (int i = 0; i < m_sumTextPt.size(); i++)
-	//{
-	//	EditElementHandle eehText;
-	//	if (!CreateText(eehText, m_sumTextPt[i][0], m_vtText[i]))
-	//		continue;
-	//	RedrawElems redrawElems;
-	//	redrawElems.SetDynamicsViews(IViewManager::GetActiveViewSet(), ev.GetViewport()); // Display in all views, draws to cursor view first...
-	//	redrawElems.SetDrawMode(DRAW_MODE_TempDraw);
-	//	redrawElems.SetDrawPurpose(DrawPurpose::Dynamics);
-	//	redrawElems.DoRedraw(eehText);
-	//		//eehText.AddToModel();
-	//}
+	for (int i = 0; i < m_sumTextPt.size(); i++)
+	{
+		EditElementHandle eehText;
+		if (!CreateText(eehText, m_sumTextPt[i][0], m_vtText[i]))
+			continue;
+		RedrawElems redrawElems;
+		redrawElems.SetDynamicsViews(IViewManager::GetActiveViewSet(), ev.GetViewport()); // Display in all views, draws to cursor view first...
+		redrawElems.SetDrawMode(DRAW_MODE_TempDraw);
+		redrawElems.SetDrawPurpose(DrawPurpose::Dynamics);
+		redrawElems.DoRedraw(eehText);
+	}
 	
 	
 }
@@ -174,6 +178,7 @@ bool CWaterLevelSymbolDrawing::CreateWaterLevelSymbol
 
 void CWaterLevelSymbolDrawing::CalcAllPt(DPoint3d levelDatumPt, vector<double> vtDistance)
 {
+	m_sumSymbolPt.clear();
 	calcSymbolPoints(levelDatumPt, vtDistance);
 	CalcVerticalLinePt(levelDatumPt, vtDistance);
 	CalcTextPt(levelDatumPt, vtDistance);
@@ -298,6 +303,7 @@ bool CWaterLevelSymbolDrawing::CreateText(EditElementHandleR eeh, DPoint3d point
 
 void CWaterLevelSymbolDrawing::CalcTextPt(DPoint3d point, vector<double> vtDistance)
 {
+	m_sumTextPt.clear();
 	double offsetX = MAXLINEDIS / 2; //默认情况：一个符号时，文本定位点x偏移MAXLINEDIS/2
 	double offsetY = vtDistance[0];  //默认情况：一个符号时，定位点y没有起始偏移
 	if (vtDistance.size() != 1)

@@ -63,14 +63,14 @@ private:
 	
 private:
 	vector<DPoint3d> m_DataButtonPickNum;
-	double m_waterLevelDatum;  //水位基准 TODO
+	double m_waterLevelDatum = 0.0;  //水位基准 TODO
 
 	vector<vector<DPoint3d>> m_sumSymbolPt;
 	vector<vector<DPoint3d>> m_sumTextPt;
 	
-	//vector<double> vtDistance = { -100000, -500000, -900000};
-	//vector<WCharCP> vtText = { L"设计高水位", L"设计常水位", L"设计低水位" };
-	vector<double> m_vtDistance = { -100000.0 };
-	vector<WCharCP> m_vtText = { L"设计高水位" };
+	vector<double> m_vtDistance = { -100000, -500000, -900000};
+	vector<WCharCP> m_vtText = { L"设计高水位", L"设计常水位", L"设计低水位" };
+	/*vector<double> m_vtDistance = { -100000.0 };
+	vector<WCharCP> m_vtText = { L"设计高水位" };*/
 };
 
