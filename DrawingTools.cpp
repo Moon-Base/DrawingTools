@@ -17,11 +17,23 @@ void ToolUtility::RectangleDynamicDrawing(WCharCP unparsed)
 	RectangleDrawing::InstallNewInstance(CMDNAME_RectangleDynamic, PROMPT_DrawRectangle);
 }
 
+void ToolUtility::CompassPlace(WCharCP unparsed)
+{
+	CCompass::InstallNewInstance(CMDNAME_PlaceCompass, PROMPT_PlaceCompass);
+}
+
+void ToolUtility::WaterLevelSymbol(WCharCP unparsed)
+{
+	CWaterLevelSymbolDrawing::InstallNewInstance(CMDNAME_WaterLevelSymbol, PROMPT_WaterLevelSymbol);
+}
+
 static MdlCommandNumber s_commandNumbers[] =
 {
 	{ToolUtility::DrawingLine,				CMD_DRAWING_LINE},
 	{ToolUtility::Boundingbox,				CMD_DRAWING_BOUNDINGBOX},
 	{ToolUtility::RectangleDynamicDrawing,  CMD_DRAWING_RECTANGLEDYNAMIC},
+	{ToolUtility::CompassPlace,				CMD_PLACE_COMPASS},
+	{ToolUtility::WaterLevelSymbol,			CMD_WATERLEVEL_SYMBOL},
 };
 
 

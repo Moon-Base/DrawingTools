@@ -53,6 +53,8 @@ appObjects = \
 	$(o)BoundingboxDrawing$(oext) \
     $(o)ELementsDrawing$(oext) \
 	$(o)RectangleDrawing$(oext) \
+	$(o)Compass$(oext) \
+	$(o)WaterLevelSymbolDrawing$(oext) \
     
 DLM_OBJECT_DEST         = $(o)
 DLM_NAME                = $(appName)
@@ -99,6 +101,10 @@ $(o)BoundingboxDrawing$(oext)  : $(baseDir)BoundingboxDrawing.cpp $(o)$(sAppName
 $(o)ELementsDrawing$(oext)  : $(baseDir)ELementsDrawing.cpp $(o)$(sAppName)Cmd.h  $(baseDir)$(sAppName)Ids.h  $(baseDir)ElementsDrawing.h $(baseDir)$(appName).h
 
 $(o)RectangleDrawing$(oext)  : $(baseDir)RectangleDrawing.cpp $(o)$(sAppName)Cmd.h  $(baseDir)$(sAppName)Ids.h  $(baseDir)RectangleDrawing.h $(baseDir)$(appName).h
+
+$(o)Compass$(oext)  : $(baseDir)Compass.cpp $(o)$(sAppName)Cmd.h  $(baseDir)$(sAppName)Ids.h  $(baseDir)Compass.h $(baseDir)$(appName).h
+
+$(o)WaterLevelSymbolDrawing$(oext)  : $(baseDir)WaterLevelSymbolDrawing.cpp $(o)$(sAppName)Cmd.h  $(baseDir)$(sAppName)Ids.h  $(baseDir)WaterLevelSymbolDrawing.h $(baseDir)$(appName).h
 
 
 %include $(MDLMKI)dlmlink.mki

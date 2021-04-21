@@ -23,7 +23,7 @@ USING_NAMESPACE_BENTLEY_MSTNPLATFORM_ELEMENT
 class RectangleDrawing : public DgnPrimitiveTool
 {
 public:
-	RectangleDrawing(int toolName, int toolPrompt) : DgnPrimitiveTool(toolName, toolPrompt) {}
+	RectangleDrawing(int toolName, int toolPrompt) : DgnPrimitiveTool(toolName, toolPrompt) {};
 	static void InstallNewInstance(int toolId, int toolPrompt);
 	
 protected:
@@ -37,10 +37,15 @@ protected:
 
 private:
 	bool CreateRectangle(EditElementHandleR eeh, vector<DPoint3d> points);
-	bool CreateDynamicRectangle(ElementAgenda agenda, vector<DPoint3d> points);
 	vector<DPoint3d> calcPoint(vector<DPoint3d> points);
+
+	bool CreateCubiod(EditElementHandleR eeh, vector<DPoint3d> bottomPoints, vector<DPoint3d> topPoints);
+	void calcCubiodPoint(vector<DPoint3d> points);
 private:
 	vector<DPoint3d>   m_points;
 	vector<DPoint3d>   m_dynamicPoints;
+
+	vector<DPoint3d> m_bottomPoints;
+	vector<DPoint3d> m_topPoints;
 };
 

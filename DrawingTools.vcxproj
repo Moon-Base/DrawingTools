@@ -88,15 +88,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoundingboxDrawing.cpp" />
+    <ClCompile Include="Compass.cpp" />
     <ClCompile Include="DrawingTools.cpp" />
+    <ClCompile Include="WaterLevelSymbolDrawing.cpp" />
     <ClCompile Include="RectangleDrawing.cpp" />
     <ClCompile Include="ElementsDrawing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoundingboxDrawing.h" />
+    <ClInclude Include="Compass.h" />
     <ClInclude Include="DrawingTools.h" />
     <ClInclude Include="DrawingToolsCmd.h" />
     <ClInclude Include="DrawingToolsIds.h" />
+    <ClInclude Include="WaterLevelSymbolDrawing.h" />
     <ClInclude Include="RectangleDrawing.h" />
     <ClInclude Include="ElementsDrawing.h" />
   </ItemGroup>

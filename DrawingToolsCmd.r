@@ -19,9 +19,11 @@ CommandTable CT_MAIN =
 
 CommandTable CT_MODIFY =
     {
-    { 1, CT_NONE,       INHERIT,        DEF,            "LINE"  },
-	{ 2, CT_NONE,       INHERIT,        DEF,            "BOUNDINGBOX" },
-	{ 3, CT_NONE,       INHERIT,        DEF,            "CUBIODDYNAMIC" },
+    { 1, CT_NONE,       INHERIT,        DEF,            "LINE"             },
+	{ 2, CT_NONE,       INHERIT,        DEF,            "BOUNDINGBOX"      },
+	{ 3, CT_NONE,       INHERIT,        DEF,            "RECTANGLEDYNAMIC" },
+	{ 4, CT_NONE,       INHERIT,        DEF,            "COMPASS"          },
+	{ 5, CT_NONE,       INHERIT,        DEF,            "WATERLEVELSYMBOL" },
     };
 
 /*-----------------------------------------------------------------------

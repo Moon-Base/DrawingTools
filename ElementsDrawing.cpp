@@ -13,7 +13,7 @@ enum ElementPropsOptions
 
 void DimensionsCreateTool::InstallNewInstance(WCharCP unparsed)
 {
-	mdlState_startPrimitive(line_dataPt1, InstallNewInstance, CMDNAME_Line, PROMPT_EnterPoint);
+	mdlState_startPrimitive(line_dataPt1, InstallNewInstance, CMDNAME_Line, PROMPT_Drawline);
 }
 
 void DimensionsCreateTool::line_dataPt1(DPoint3dCP ptP, int view)
@@ -21,7 +21,7 @@ void DimensionsCreateTool::line_dataPt1(DPoint3dCP ptP, int view)
 	ptStack[0] = *ptP;
 	StateCallback::SetDataPointFunction(line_dataPt2);
 	StateCallback::SetComplexDynamicsFunction(line_drawLine);
-	mdlOutput_rscPrintf(MSG_PROMPT, NULL, STRINGLISTID_Prompts, PROMPT_EnterPoint);
+	mdlOutput_rscPrintf(MSG_PROMPT, NULL, STRINGLISTID_Prompts, PROMPT_Drawline);
 
 }
 
@@ -43,7 +43,7 @@ void DimensionsCreateTool::line_dataPt2(DPoint3dCP ptP, int view)
 	);
 	ptStack[0] = *ptP;
 	StateCallback::SetComplexDynamicsFunction(line_drawLine);
-	mdlOutput_rscPrintf(MSG_PROMPT, NULL, STRINGLISTID_Prompts, PROMPT_EnterPoint);
+	mdlOutput_rscPrintf(MSG_PROMPT, NULL, STRINGLISTID_Prompts, PROMPT_Drawline);
 
 }
 

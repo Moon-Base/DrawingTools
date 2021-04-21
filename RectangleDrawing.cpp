@@ -19,7 +19,7 @@ bool RectangleDrawing::_OnDataButton(DgnButtonEventCR ev)
 	//第二次点击时，绘制rectangle
 	if (m_points.size() == 2)
 	{
-		 m_points = calcPoint(m_points);
+		m_points = calcPoint(m_points);
 	}
 	
 	if (m_points.size() < 4)
@@ -33,7 +33,7 @@ bool RectangleDrawing::_OnDataButton(DgnButtonEventCR ev)
 		m_points.clear();
 	}
 	
-	return false;
+	return true;
 }
 
 void RectangleDrawing::_OnPostInstall()
@@ -61,27 +61,6 @@ void RectangleDrawing::_OnDynamicFrame(DgnButtonEventCR ev)
 	redrawElems.SetDrawMode(DRAW_MODE_TempDraw);
 	redrawElems.SetDrawPurpose(DrawPurpose::Dynamics);
 	redrawElems.DoRedraw(eeh);
-	
-	
-}
-
-bool RectangleDrawing::CreateDynamicRectangle(ElementAgenda agenda, vector<DPoint3d> points)
-{
-	m_dynamicPoints = calcPoint(points);
-	bvector<DPoint3d> bPoints;
-	EditElementHandle eeh;
-
-	for (auto& p : m_dynamicPoints)
-	{
-		bPoints.push_back(p);
-	}
-	bvector<DPoint3d> const &dynamicPoints = bPoints;
-	if (SUCCESS == DraftingElementSchema::ToElement(eeh, *ICurvePrimitive::CreateLineString(dynamicPoints), NULL, ACTIVEMODEL->Is3d(), *ACTIVEMODEL))
-	{
-		ElementPropertyUtils::ApplyActiveSettings(eeh);
-		agenda.Insert(eeh);
-	}
-	return true;
 }
 
 bool RectangleDrawing::CreateRectangle(EditElementHandleR eeh, vector<DPoint3d> points)
@@ -101,7 +80,6 @@ bool RectangleDrawing::CreateRectangle(EditElementHandleR eeh, vector<DPoint3d> 
 
 	return true;
 }
-
 
 vector<DPoint3d> RectangleDrawing::calcPoint(vector<DPoint3d> points)
 {
@@ -162,4 +140,37 @@ vector<DPoint3d> RectangleDrawing::calcPoint(vector<DPoint3d> points)
 		rectanglePoint.push_back(p4);
 	}
 	return rectanglePoint;
+}
+
+
+bool RectangleDrawing::CreateCubiod(EditElementHandleR eeh, vector<DPoint3d> bottomPoints, vector<DPoint3d> topPoints)
+{
+	bvector<DPoint3d> bPoints;
+	for (auto& b : bottomPoints)
+	{
+		bPoints.push_back(b);
+	}
+	PolyfaceHeaderPtr bPolyface = PolyfaceHeader::CreateVariableSizeIndexed();
+	bPolyface->AddPolygon(bPoints);
+	if (SUCCESS != MeshHeaderHandler::CreateMeshElement(eeh, NULL, *bPolyface, true, *ACTIVEMODEL))
+		return false;
+	ElementPropertyUtils::ApplyActiveSettings(eeh);
+
+	bvector<DPoint3d> tPoints;
+	for (auto& t : topPoints)
+	{
+		tPoints.push_back(t);
+	}
+	PolyfaceHeaderPtr tPolyface = PolyfaceHeader::CreateVariableSizeIndexed();
+	tPolyface->AddPolygon(tPoints);
+	if (SUCCESS != MeshHeaderHandler::CreateMeshElement(eeh, NULL, *tPolyface, true, *ACTIVEMODEL))
+		return false;
+	ElementPropertyUtils::ApplyActiveSettings(eeh);
+
+	return true;
+}
+
+void RectangleDrawing::calcCubiodPoint(vector<DPoint3d> points)
+{
+
 }
