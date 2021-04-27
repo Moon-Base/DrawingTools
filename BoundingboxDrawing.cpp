@@ -48,10 +48,9 @@ bool BoundingboxDrawing::_OnModifyComplete(DgnButtonEventCR ev)
 {
 	__super::_OnModifyComplete(ev);
 
-	//CreateBoundingLine();
+	CreateBoundingLine();
 	//CreateBounding3D();
-	
-	CreateBounding();
+	//CreateBounding();
 	return true;
 }
 
@@ -180,7 +179,6 @@ void BoundingboxDrawing::CreateBounding()
 	if (m_rangeSum.IsNull())
 		return;
 	
-
 	bvector<DPoint3d> pointsBottom(4);
 	pointsBottom[0] = pointsSum[0];
 	pointsBottom[1] = pointsSum[1];

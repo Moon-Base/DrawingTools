@@ -14,6 +14,7 @@
 #include <vector>
 #include "DrawingToolsIds.h"
 
+
 using namespace std;
 USING_NAMESPACE_BENTLEY_DGNPLATFORM
 USING_NAMESPACE_BENTLEY_MSTNPLATFORM
@@ -41,27 +42,30 @@ private:
 	//levelDatumPt水平基准面上的点
 	//vtDistance 离基准点的y轴距离
 	bool             CreateElement(EditElementHandleR eeh, vector<DPoint3d> points);
-	bool             CreateText(EditElementHandleR eeh, DPoint3d point, WCharCP text);
-	void             CalcAllPt(DPoint3d levelDatumPt, vector<double> vtDistance);
-	void             calcSymbolPoints(DPoint3d point, vector<double> waterLevelHeight);
-	vector<DPoint3d> calcTrianglePt(DPoint3d symbolLocatePt, double triSideDis);
+	bool             CreateText(EditElementHandleR eeh, DPoint3d point, std::wstring text);
+	void             CalcAllPt(DPoint3d levelDatumPt);
+	void             calcSymbolPoints(DPoint3d point);
+	vector<DPoint3d> calcTrianglePt(DPoint3d symbolLocatePt);
 	vector<DPoint3d> calcLinePt(DPoint3d symbolLocatePt, double lineDis, double intervalDis);
-	void             CalcVerticalLinePt(DPoint3d levelDatumPt, vector<double> vtDistance);
-	void             CalcTextPt(DPoint3d point, vector<double> vtText);
+	void             CalcVerticalLinePt(DPoint3d levelDatumPt);
+	void             CalcTextPt(DPoint3d point);
 	
 #pragma endregion
 
 	
 private:
-	vector<DPoint3d>         m_vtPickPt;
+	vector<DPoint3d>         m_pickPts;
 	double                   m_waterLevelDatum = 0.0;  //水位基准 TODO
 
 	vector<vector<DPoint3d>> m_sumSymbolPt;
 	vector<vector<DPoint3d>> m_sumTextPt;
 	
-	vector<double>           m_vtDistance = { -100000, -500000, -900000};
-	vector<WCharCP>          m_vtText = { L"设计高水位", L"设计常水位", L"设计低水位" };
+	//vector<double>           m_vtDistance = { -1000000, -2000000, -3000000}; //间隔1米
+	vector<double>           m_waterLevels = { -1000000.0, -2000000.0, -3000000.0 }; //间隔1米
+	vector<wstring>          m_vtText = { L"设计高水位", L"设计常水位", L"设计低水位" };
 	/*vector<double>         m_vtDistance = { -100000.0 };
-	vector<WCharCP>          m_vtText = { L"设计高水位" };*/
+	vector<std::wstring>          m_vtText = { L"设计高水位" };*/
 };
+//设计高水位；设计常水位；设计低水位
+//-100000；-500000；-900000
 
