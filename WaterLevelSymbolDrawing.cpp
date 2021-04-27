@@ -243,7 +243,8 @@ void CWaterLevelSymbolDrawing::CalcVerticalLinePt(DPoint3d levelDatumPt)
 		verticalLinePt.push_back(bottomPt);
 
 		DPoint3d topPt = levelDatumPt;
-		topPt.y += m_waterLevels[0] + offsetY + TEXTLINEINTERVALDIS * (m_waterLevels.size() + 1);
+		topPt.y += offsetY + TEXTLINEINTERVALDIS * (m_waterLevels.size());
+		//topPt.y += m_waterLevels[0] + offsetY + TEXTLINEINTERVALDIS * (m_waterLevels.size() + 1);
 		verticalLinePt.push_back(topPt);
 		m_sumSymbolPt.push_back(verticalLinePt);
 	}
