@@ -20,17 +20,18 @@ USING_NAMESPACE_BENTLEY_DGNPLATFORM
 USING_NAMESPACE_BENTLEY_MSTNPLATFORM
 USING_NAMESPACE_BENTLEY_MSTNPLATFORM_ELEMENT
 
-class CWaterLevelSymbolDrawing : public DgnPrimitiveTool
+class CWaterLevelSymbolDrawing : public DgnElementSetTool
 {
 public:
-	CWaterLevelSymbolDrawing(int toolName, int toolPrompt) : DgnPrimitiveTool(toolName, toolPrompt) {};
+	CWaterLevelSymbolDrawing() : DgnElementSetTool() {};
 	~CWaterLevelSymbolDrawing();
-	static void InstallNewInstance(int toolId, int toolPrompt);
+	static void InstallNewInstance();
 
 protected:
 	//右键复位
 	virtual bool _OnResetButton(DgnButtonEventCR ev) override { _OnRestartTool(); return true; }
-	virtual void _OnRestartTool() override { InstallNewInstance(GetToolId(), GetToolPrompt()); };
+	virtual void _OnRestartTool() override { InstallNewInstance(); };
+	virtual StatusInt _OnElementModify(EditElementHandleR el) override { return 0; };
 
 	virtual bool _OnDataButton(DgnButtonEventCR ev) override;
 	virtual void _OnPostInstall() override;
@@ -55,11 +56,12 @@ private:
 	
 private:
 	vector<DPoint3d>         m_pickPts;
-	double                   m_waterLevelDatum = 0.0;  //水位基准 TODO
+	//点击水位基准线获取值，则输入0；否则输入正常基准值
+	double                   m_waterLevelDatum = 24018;  //水位基准
 	vector<vector<DPoint3d>> m_sumSymbolPt;
 	vector<vector<DPoint3d>> m_sumTextPt;
+	double                   m_textLineIntervalDis;
 	vector<double>           m_waterLevels = { -10000.0, -30000.0, -60000.0 }; //间隔7mm
 	vector<wstring>          m_vtText = { L"设计高水位", L"设计常水位", L"设计低水位" };
-	vector<Dpoint3d>         m_DatumLines;
 };
 

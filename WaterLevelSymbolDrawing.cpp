@@ -8,12 +8,12 @@ const double MINLINEDIS =          10000.0; //25mm 短线长度
 const double LINEINTERVALDIS =     3000.0; //3mm 三条线的间距 三角形高的1/3
 
 const double TEXTLINEDIS =         50000.0; //50m  文本下方线的长度
-const double TEXTLINEINTERVALDIS = 10000.0; //10m  文本下方线的间距
+//const double TEXTLINEINTERVALDIS = 10000.0; //10m  文本下方线的间距
 
 
-void CWaterLevelSymbolDrawing::InstallNewInstance(int toolId, int toolPrompt)
+void CWaterLevelSymbolDrawing::InstallNewInstance()
 {
-	CWaterLevelSymbolDrawing* tool = new CWaterLevelSymbolDrawing(toolId, toolPrompt);
+	CWaterLevelSymbolDrawing* tool = new CWaterLevelSymbolDrawing();
 	tool->InstallTool();
 }
 
@@ -24,16 +24,25 @@ CWaterLevelSymbolDrawing::~CWaterLevelSymbolDrawing()
 
 bool CWaterLevelSymbolDrawing::_OnDataButton(DgnButtonEventCR ev)
 {
-	m_DatumLines.emplace_back(*ev.GetPoint());
+	DgnFileP  pActiveDgnFile = mdlDgnFileObj_getMasterFile();
+	DgnTextStylePtr m_textStyle = DgnTextStyle::GetSettings(*pActiveDgnFile);
+	/*int ht;   //TextStyle_Height返回是double，不能用int接
+	m_textStyle->GetProperty(TextStyle_Height, ht);*/
+	double dt;
+	m_textStyle->GetProperty(TextStyle_Height, dt);
+	m_textLineIntervalDis = dt * 1.5; //文本线间距设为文本高度的1.3
+
 	DPoint3d pickPt = *ev.GetPoint();
 	m_pickPts.emplace_back(*ev.GetPoint());
 	if (m_pickPts.size() == 1)
 	{
-		m_waterLevelDatum = m_pickPts[0].y;
+		if (m_waterLevelDatum == 0)
+		{
+			m_waterLevelDatum = m_pickPts[0].y;
+		}
 		_BeginDynamics();
 		return true;
 	}
-	m_sumSymbolPt.emplace_back(m_DatumLines);
 	//基点坐标
 	DPoint3d levelDatumPt = DPoint3d::From(pickPt.x, m_waterLevelDatum, 0.0);
 	m_waterLevelDatum = 0.0;
@@ -131,7 +140,7 @@ bool CWaterLevelSymbolDrawing::CreateText(EditElementHandleR eeh, DPoint3d point
 	DgnModelP pActiveModel = ISessionMgr::GetActiveDgnModelP();
 	TextBlockPtr pTextBlock = TextBlock::Create(*pTextStyle, *pActiveModel);
 	pTextBlock->AppendText(text.data());
-	point.y += TEXTLINEINTERVALDIS * 0.75;
+	point.y += 3000;  //增加文本与下划线的间隔
 	pTextBlock->SetUserOrigin(point);
 
 	if (TEXTBLOCK_TO_ELEMENT_RESULT_Success != TextHandlerBase::CreateElement(eeh, nullptr, *pTextBlock))
@@ -219,7 +228,7 @@ void CWaterLevelSymbolDrawing::CalcTextPt(DPoint3d point)
 		vector<DPoint3d> TextPts;
 		DPoint3d textStartPt, textEndPt;
 		textStartPt.x = point.x + offsetX;
-		textStartPt.y = point.y + offsetY + TEXTLINEINTERVALDIS * i;
+		textStartPt.y = point.y + offsetY + m_textLineIntervalDis * i;
 		textStartPt.z = textEndPt.z = point.z;
 		TextPts.emplace_back(textStartPt);
 
@@ -245,7 +254,7 @@ void CWaterLevelSymbolDrawing::CalcVerticalLinePt(DPoint3d levelDatumPt)
 		verticalLinePt.emplace_back(bottomPt);
 
 		DPoint3d topPt = levelDatumPt;
-		topPt.y += offsetY + TEXTLINEINTERVALDIS * (m_waterLevels.size());
+		topPt.y += offsetY + m_textLineIntervalDis * (m_waterLevels.size());
 		//topPt.y += m_waterLevels[0] + offsetY + TEXTLINEINTERVALDIS * (m_waterLevels.size() + 1);
 		verticalLinePt.emplace_back(topPt);
 		m_sumSymbolPt.emplace_back(verticalLinePt);

@@ -24,7 +24,7 @@ void ToolUtility::CompassPlace(WCharCP unparsed)
 
 void ToolUtility::WaterLevelSymbol(WCharCP unparsed)
 {
-	CWaterLevelSymbolDrawing::InstallNewInstance(CMDNAME_WaterLevelSymbol, PROMPT_WaterLevelSymbol);
+	CWaterLevelSymbolDrawing::InstallNewInstance();
 }
 
 static MdlCommandNumber s_commandNumbers[] =
