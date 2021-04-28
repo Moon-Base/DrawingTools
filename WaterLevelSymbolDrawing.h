@@ -56,16 +56,10 @@ private:
 private:
 	vector<DPoint3d>         m_pickPts;
 	double                   m_waterLevelDatum = 0.0;  //水位基准 TODO
-
 	vector<vector<DPoint3d>> m_sumSymbolPt;
 	vector<vector<DPoint3d>> m_sumTextPt;
-	
-	//vector<double>           m_vtDistance = { -1000000, -2000000, -3000000}; //间隔1米
-	vector<double>           m_waterLevels = { -100000.0, -200000.0, -300000.0 }; //间隔1米
+	vector<double>           m_waterLevels = { -10000.0, -30000.0, -60000.0 }; //间隔7mm
 	vector<wstring>          m_vtText = { L"设计高水位", L"设计常水位", L"设计低水位" };
-	/*vector<double>         m_vtDistance = { -100000.0 };
-	vector<std::wstring>          m_vtText = { L"设计高水位" };*/
+	vector<Dpoint3d>         m_DatumLines;
 };
-//设计高水位；设计常水位；设计低水位
-//-100000；-500000；-900000
 

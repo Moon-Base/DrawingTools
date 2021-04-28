@@ -1,14 +1,14 @@
 #include "WaterLevelSymbolDrawing.h"
 
+//单位微米 1mm = 1000um
+const double TRIANGLEHEIGHT =      10000.0; //10mm 三角形高 
+const double MAXLINEDIS =          30000.0; //40mm  长线长度
+const double MIDLINEDIS =          20000.0; //30mm  中线长度
+const double MINLINEDIS =          10000.0; //25mm 短线长度
+const double LINEINTERVALDIS =     3000.0; //3mm 三条线的间距 三角形高的1/3
 
-const double TRIANGLEHEIGHT = 10000.0; //0.01m 三角形高
-const double MAXLINEDIS = 40000.0; //0.04m  长线长度
-const double MIDLINEDIS = 30000.0; //0.03m  中线长度
-const double MINLINEDIS = 25000.0; //0.015m 短线长度
-const double LINEINTERVALDIS = 25000.0; //0.003m 三条线的间距 三角形高的1/3
-
-const double TEXTLINEDIS = 100000.0; //0.1m  文本下方线的长度
-const double TEXTLINEINTERVALDIS = 10000.0; //0.01m  文本下方线的间距
+const double TEXTLINEDIS =         50000.0; //50m  文本下方线的长度
+const double TEXTLINEINTERVALDIS = 10000.0; //10m  文本下方线的间距
 
 
 void CWaterLevelSymbolDrawing::InstallNewInstance(int toolId, int toolPrompt)
@@ -24,14 +24,16 @@ CWaterLevelSymbolDrawing::~CWaterLevelSymbolDrawing()
 
 bool CWaterLevelSymbolDrawing::_OnDataButton(DgnButtonEventCR ev)
 {
+	m_DatumLines.emplace_back(*ev.GetPoint());
 	DPoint3d pickPt = *ev.GetPoint();
-	m_pickPts.push_back(*ev.GetPoint());
+	m_pickPts.emplace_back(*ev.GetPoint());
 	if (m_pickPts.size() == 1)
 	{
 		m_waterLevelDatum = m_pickPts[0].y;
 		_BeginDynamics();
 		return true;
 	}
+	m_sumSymbolPt.emplace_back(m_DatumLines);
 	//基点坐标
 	DPoint3d levelDatumPt = DPoint3d::From(pickPt.x, m_waterLevelDatum, 0.0);
 	m_waterLevelDatum = 0.0;
@@ -165,7 +167,7 @@ void CWaterLevelSymbolDrawing::calcSymbolPoints(DPoint3d point)
 		m_sumSymbolPt.emplace_back(calcLinePt(symbolLocatePt, MIDLINEDIS, LINEINTERVALDIS));
 	}
 	//求minLine坐标点（2个）
-	m_sumSymbolPt.push_back(calcLinePt(symbolLocatePt, MINLINEDIS, LINEINTERVALDIS * 2));
+	m_sumSymbolPt.emplace_back(calcLinePt(symbolLocatePt, MINLINEDIS, LINEINTERVALDIS * 2));
 }
 
 //计算水位符号-三角形
@@ -174,14 +176,14 @@ vector<DPoint3d> CWaterLevelSymbolDrawing::calcTrianglePt(DPoint3d symbolLocateP
 	//求三角形点坐标（4个）
 	DPoint3d p2, p3;
 	vector<DPoint3d> trianglePts;
-	trianglePts.push_back(symbolLocatePt);
+	trianglePts.emplace_back(symbolLocatePt);
 	p2.z = p3.z = symbolLocatePt.z;
 	p2.x = symbolLocatePt.x - TRIANGLEHEIGHT;
 	p3.x = symbolLocatePt.x + TRIANGLEHEIGHT;
 	p2.y = p3.y = symbolLocatePt.y + TRIANGLEHEIGHT;
 	trianglePts.emplace_back(p2);
 	trianglePts.emplace_back(p3);
-	trianglePts.push_back(symbolLocatePt);
+	trianglePts.emplace_back(symbolLocatePt);
 	return trianglePts;
 }
 
@@ -194,10 +196,10 @@ vector<DPoint3d> CWaterLevelSymbolDrawing::calcLinePt(DPoint3d symbolLocatePt, d
 	LinePt.z = symbolLocatePt.z;
 	LinePt.x = symbolLocatePt.x - lineDis / 2;
 	LinePt.y = symbolLocatePt.y - lineIntervalDis;
-	linePts.push_back(LinePt);
+	linePts.emplace_back(LinePt);
 	LinePt.x = symbolLocatePt.x + lineDis / 2;
 	LinePt.y = symbolLocatePt.y - lineIntervalDis;
-	linePts.push_back(LinePt);
+	linePts.emplace_back(LinePt);
 	return linePts;
 }
 
@@ -219,13 +221,13 @@ void CWaterLevelSymbolDrawing::CalcTextPt(DPoint3d point)
 		textStartPt.x = point.x + offsetX;
 		textStartPt.y = point.y + offsetY + TEXTLINEINTERVALDIS * i;
 		textStartPt.z = textEndPt.z = point.z;
-		TextPts.push_back(textStartPt);
+		TextPts.emplace_back(textStartPt);
 
 		textEndPt.x = textStartPt.x + TEXTLINEDIS;
 		textEndPt.y = textStartPt.y;
-		TextPts.push_back(textEndPt);
-		m_sumTextPt.push_back(TextPts);
-		m_sumSymbolPt.push_back(TextPts);
+		TextPts.emplace_back(textEndPt);
+		m_sumTextPt.emplace_back(TextPts);
+		m_sumSymbolPt.emplace_back(TextPts);
 	}
 }
 
@@ -240,13 +242,13 @@ void CWaterLevelSymbolDrawing::CalcVerticalLinePt(DPoint3d levelDatumPt)
 		vector<DPoint3d> verticalLinePt;
 		DPoint3d bottomPt = levelDatumPt;
 		bottomPt.y += m_waterLevels[m_waterLevels.size() - 1] - LINEINTERVALDIS * 2;
-		verticalLinePt.push_back(bottomPt);
+		verticalLinePt.emplace_back(bottomPt);
 
 		DPoint3d topPt = levelDatumPt;
 		topPt.y += offsetY + TEXTLINEINTERVALDIS * (m_waterLevels.size());
 		//topPt.y += m_waterLevels[0] + offsetY + TEXTLINEINTERVALDIS * (m_waterLevels.size() + 1);
-		verticalLinePt.push_back(topPt);
-		m_sumSymbolPt.push_back(verticalLinePt);
+		verticalLinePt.emplace_back(topPt);
+		m_sumSymbolPt.emplace_back(verticalLinePt);
 	}
 }
 

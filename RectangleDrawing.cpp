@@ -15,7 +15,7 @@ bool RectangleDrawing::_OnDataButton(DgnButtonEventCR ev)
 	if (0 == m_points.size())
 		_BeginDynamics();
 	
-	m_points.push_back(*ev.GetPoint());
+	m_points.emplace_back(*ev.GetPoint());
 	//第二次点击时，绘制rectangle
 	if (m_points.size() == 2)
 	{
@@ -47,7 +47,7 @@ void RectangleDrawing::_OnDynamicFrame(DgnButtonEventCR ev)
 	m_dynamicPoints = m_points;
 	ElementAgenda agenda;
 	//添加矩形的第二个点（动态点）
-	m_dynamicPoints.push_back(*ev.GetPoint());
+	m_dynamicPoints.emplace_back(*ev.GetPoint());
 
 	m_dynamicPoints = calcPoint(m_dynamicPoints);
 
@@ -109,8 +109,8 @@ vector<DPoint3d> RectangleDrawing::calcPoint(vector<DPoint3d> points)
 		p3.x = p2.x - xLenP23;
 		p4.y = p1.y + yLenP23;
 		p4.x = p1.x - xLenP23;
-		rectanglePoint.push_back(p3);
-		rectanglePoint.push_back(p4);
+		rectanglePoint.emplace_back(p3);
+		rectanglePoint.emplace_back(p4);
 	}
 	else if (p1.x<p2.x && p1.y>p2.y || p1.x>p2.x && p1.y<p2.y)
 	{
@@ -118,8 +118,8 @@ vector<DPoint3d> RectangleDrawing::calcPoint(vector<DPoint3d> points)
 		p3.x = p2.x + xLenP23;
 		p4.y = p1.y + yLenP23;
 		p4.x = p1.x + xLenP23;
-		rectanglePoint.push_back(p3);
-		rectanglePoint.push_back(p4);
+		rectanglePoint.emplace_back(p3);
+		rectanglePoint.emplace_back(p4);
 	}
 	else if (p1.y == p2.y)
 	{
@@ -127,8 +127,8 @@ vector<DPoint3d> RectangleDrawing::calcPoint(vector<DPoint3d> points)
 		p3.y = p2.y + width;
 		p4.x = p1.x;
 		p4.y = p1.y + width;
-		rectanglePoint.push_back(p3);
-		rectanglePoint.push_back(p4);
+		rectanglePoint.emplace_back(p3);
+		rectanglePoint.emplace_back(p4);
 	}
 	else if (p1.x == p2.x)
 	{
@@ -136,8 +136,8 @@ vector<DPoint3d> RectangleDrawing::calcPoint(vector<DPoint3d> points)
 		p3.y = p2.y;
 		p4.x = p1.x + width;
 		p4.y = p1.y;
-		rectanglePoint.push_back(p3);
-		rectanglePoint.push_back(p4);
+		rectanglePoint.emplace_back(p3);
+		rectanglePoint.emplace_back(p4);
 	}
 	return rectanglePoint;
 }
