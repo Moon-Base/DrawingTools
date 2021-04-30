@@ -7,7 +7,7 @@ const double MIDLINEDIS =          20000.0; //30mm  中线长度
 const double MINLINEDIS =          10000.0; //25mm 短线长度
 const double LINEINTERVALDIS =     3000.0; //3mm 三条线的间距 三角形高的1/3
 
-const double TEXTLINEDIS =         50000.0; //50m  文本下方线的长度
+//const double TEXTLINEDIS =         50000.0; //50m  文本下方线的长度
 //const double TEXTLINEINTERVALDIS = 10000.0; //10m  文本下方线的间距
 
 
@@ -30,7 +30,7 @@ bool CWaterLevelSymbolDrawing::_OnDataButton(DgnButtonEventCR ev)
 	m_textStyle->GetProperty(TextStyle_Height, ht);*/
 	double dt;
 	m_textStyle->GetProperty(TextStyle_Height, dt);
-	m_textLineIntervalDis = dt * 1.5; //文本线间距设为文本高度的1.3
+	m_textLineIntervalDis = dt * 1.5; //文本线间距设为文本高度的1.5
 
 	DPoint3d pickPt = *ev.GetPoint();
 	m_pickPts.emplace_back(*ev.GetPoint());
@@ -140,7 +140,8 @@ bool CWaterLevelSymbolDrawing::CreateText(EditElementHandleR eeh, DPoint3d point
 	DgnModelP pActiveModel = ISessionMgr::GetActiveDgnModelP();
 	TextBlockPtr pTextBlock = TextBlock::Create(*pTextStyle, *pActiveModel);
 	pTextBlock->AppendText(text.data());
-	point.y += 3000;  //增加文本与下划线的间隔
+	//文本的四至坐标小于实际大小的包围盒
+	point.y += 0.145 * dt;  //将文本置于下划线之上
 	pTextBlock->SetUserOrigin(point);
 
 	if (TEXTBLOCK_TO_ELEMENT_RESULT_Success != TextHandlerBase::CreateElement(eeh, nullptr, *pTextBlock))
@@ -148,6 +149,10 @@ bool CWaterLevelSymbolDrawing::CreateText(EditElementHandleR eeh, DPoint3d point
 	ElementPropertiesSetterPtr setter = ElementPropertiesSetter::Create();
 	setter->SetColor(3); // 3 -- Red
 	setter->Apply(eeh);
+
+	DRange3d dr = pTextBlock->GetNominalRange();
+	double xLen = dr.XLength();
+	m_textLineDis = xLen;
 
 	return true;
 }
@@ -232,7 +237,7 @@ void CWaterLevelSymbolDrawing::CalcTextPt(DPoint3d point)
 		textStartPt.z = textEndPt.z = point.z;
 		TextPts.emplace_back(textStartPt);
 
-		textEndPt.x = textStartPt.x + TEXTLINEDIS;
+		textEndPt.x = textStartPt.x + m_textLineDis;
 		textEndPt.y = textStartPt.y;
 		TextPts.emplace_back(textEndPt);
 		m_sumTextPt.emplace_back(TextPts);

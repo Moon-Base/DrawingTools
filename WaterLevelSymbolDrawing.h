@@ -60,7 +60,8 @@ private:
 	double                   m_waterLevelDatum = 24018;  //水位基准
 	vector<vector<DPoint3d>> m_sumSymbolPt;
 	vector<vector<DPoint3d>> m_sumTextPt;
-	double                   m_textLineIntervalDis;
+	double                   m_textLineIntervalDis;  //文本下方线的间距
+	double                   m_textLineDis;          //文本下方线的长度
 	vector<double>           m_waterLevels = { -10000.0, -30000.0, -60000.0 }; //间隔7mm
 	vector<wstring>          m_vtText = { L"设计高水位", L"设计常水位", L"设计低水位" };
 };
