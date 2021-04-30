@@ -173,18 +173,23 @@ void CWaterLevelSymbolDrawing::CalcAllPt(DPoint3d levelDatumPt)
 void CWaterLevelSymbolDrawing::calcSymbolPoints(DPoint3d point)
 {
 	DPoint3d symbolLocatePt = point;
-	for (double wh : m_waterLevels)
+	for (int i = 0; i < m_waterLevels.size(); i++)
 	{
 		//通过水位基准和各水位线差求间距
-		//TODO
 		//求每个符号的定点坐标（三角形下方点坐标）
-		symbolLocatePt.x = point.x; symbolLocatePt.y = point.y + wh; symbolLocatePt.z = point.z;
+		symbolLocatePt.x = point.x; symbolLocatePt.y = point.y + m_waterLevels[i]; symbolLocatePt.z = point.z;
 		m_sumSymbolPt.emplace_back(calcTrianglePt(symbolLocatePt));
 		m_sumSymbolPt.emplace_back(calcLinePt(symbolLocatePt, MAXLINEDIS, 0));
 		m_sumSymbolPt.emplace_back(calcLinePt(symbolLocatePt, MIDLINEDIS, LINEINTERVALDIS));
+		if (m_waterLevels[1] > m_waterLevels[0] && i == 0)
+		{
+			m_sumSymbolPt.emplace_back(calcLinePt(symbolLocatePt, MINLINEDIS, LINEINTERVALDIS * 2));
+		}
 	}
-	//求minLine坐标点（2个）
-	m_sumSymbolPt.emplace_back(calcLinePt(symbolLocatePt, MINLINEDIS, LINEINTERVALDIS * 2));
+	if (m_waterLevels[1] < m_waterLevels[0])
+	{
+		m_sumSymbolPt.emplace_back(calcLinePt(symbolLocatePt, MINLINEDIS, LINEINTERVALDIS * 2));
+	}
 }
 
 //计算水位符号-三角形
@@ -231,17 +236,29 @@ void CWaterLevelSymbolDrawing::CalcTextPt(DPoint3d point)
 		offsetX = 0;
 		offsetY = TRIANGLEHEIGHT * 2;
 	}
-	for (int i = 0; i < m_waterLevels.size(); i++) 
+	for (int i = 0; i < m_waterLevels.size(); i++)
 	{
 		vector<DPoint3d> TextPts;
 		DPoint3d textStartPt, textEndPt;
-		textStartPt.x = point.x + offsetX;
-		textStartPt.y = point.y + offsetY + m_textLineIntervalDis * i;
 		textStartPt.z = textEndPt.z = point.z;
-		TextPts.emplace_back(textStartPt);
+		if (m_waterLevels[0] > m_waterLevels[1])
+		{
+			//down
+			textStartPt.x = point.x + offsetX;
+			textStartPt.y = point.y + m_waterLevels[0] + offsetY + m_textLineIntervalDis * i;
+			textEndPt.x = textStartPt.x + m_textLineDis;
+			textEndPt.y = textStartPt.y;
 
-		textEndPt.x = textStartPt.x + m_textLineDis;
-		textEndPt.y = textStartPt.y;
+		}
+		else
+		{
+			//up
+			textStartPt.x = point.x + offsetX;
+			textStartPt.y = point.y + m_waterLevels[m_waterLevels.size() - 1] + offsetY + m_textLineIntervalDis * i;
+			textEndPt.x = textStartPt.x + m_textLineDis;
+			textEndPt.y = textStartPt.y;
+		}
+		TextPts.emplace_back(textStartPt);
 		TextPts.emplace_back(textEndPt);
 		m_sumTextPt.emplace_back(TextPts);
 		m_sumSymbolPt.emplace_back(TextPts);
@@ -255,15 +272,22 @@ void CWaterLevelSymbolDrawing::CalcVerticalLinePt(DPoint3d levelDatumPt)
 	{
 		//double TriHeight = sqrt(pow(TRIANGLEHEIGHT*2, 2) - pow(TRIANGLEHEIGHT*2 / 2, 2));
 		double offsetY = TRIANGLEHEIGHT * 2;
-
 		vector<DPoint3d> verticalLinePt;
 		DPoint3d bottomPt = levelDatumPt;
-		bottomPt.y += m_waterLevels[m_waterLevels.size() - 1] - LINEINTERVALDIS * 2;
-		verticalLinePt.emplace_back(bottomPt);
-
 		DPoint3d topPt = levelDatumPt;
-		topPt.y += offsetY + m_textLineIntervalDis * (m_waterLevels.size());
-		//topPt.y += m_waterLevels[0] + offsetY + TEXTLINEINTERVALDIS * (m_waterLevels.size() + 1);
+		if (m_waterLevels[0] > m_waterLevels[1])
+		{
+			//down
+			bottomPt.y += m_waterLevels[m_waterLevels.size() - 1] - LINEINTERVALDIS * 2;
+			topPt.y += m_waterLevels[0] + offsetY + m_textLineIntervalDis * m_waterLevels.size();
+		}
+		else
+		{
+			//up
+			bottomPt.y += m_waterLevels[0] - LINEINTERVALDIS * 2;
+			topPt.y += m_waterLevels[m_waterLevels.size() - 1] + offsetY + m_textLineIntervalDis * m_waterLevels.size();
+		}
+		verticalLinePt.emplace_back(bottomPt);
 		verticalLinePt.emplace_back(topPt);
 		m_sumSymbolPt.emplace_back(verticalLinePt);
 	}
@@ -283,7 +307,7 @@ bool CWaterLevelSymbolDrawing::CheckWinFormValue()
 	}
 	if (m_waterLevels.size() != m_vtText.size())
 	{
-		mdlDialog_dmsgsPrint(L"请输入水位值与文本个数不匹配！");
+		mdlDialog_dmsgsPrint(L"水位值与文本个数不匹配！");
 		return false;
 	}
 	return true;
