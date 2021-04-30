@@ -24,6 +24,9 @@ CWaterLevelSymbolDrawing::~CWaterLevelSymbolDrawing()
 
 bool CWaterLevelSymbolDrawing::_OnDataButton(DgnButtonEventCR ev)
 {
+	if (!CheckWinFormValue())
+		return false;
+
 	DgnFileP  pActiveDgnFile = mdlDgnFileObj_getMasterFile();
 	DgnTextStylePtr m_textStyle = DgnTextStyle::GetSettings(*pActiveDgnFile);
 	/*int ht;   //TextStyle_Height返回是double，不能用int接
@@ -266,4 +269,23 @@ void CWaterLevelSymbolDrawing::CalcVerticalLinePt(DPoint3d levelDatumPt)
 	}
 }
 
+bool CWaterLevelSymbolDrawing::CheckWinFormValue()
+{
+	if (m_waterLevels.size() == 0)
+	{
+		mdlDialog_dmsgsPrint(L"请输入水位值！");
+		return false;
+	}
+	if (m_vtText.size() == 0)
+	{
+		mdlDialog_dmsgsPrint(L"请输入水位文本！");
+		return false;
+	}
+	if (m_waterLevels.size() != m_vtText.size())
+	{
+		mdlDialog_dmsgsPrint(L"请输入水位值与文本个数不匹配！");
+		return false;
+	}
+	return true;
+}
 #pragma endregion
